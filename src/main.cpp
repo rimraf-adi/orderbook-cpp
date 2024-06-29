@@ -5,11 +5,11 @@ using namespace std;
 
 class Node{
     //data
-    private:
+    public:
 
     float data;
     Node*next;
-    
+
     //constructors
     public:
 
@@ -32,54 +32,56 @@ class Node{
 };
 
 class List{
-    private:
+    public:
         Node* start;
         Node* end;
         int size;
-    
+
     public:
     //constructor
     List(vector<int> lldata ){
-
-        for(int i = 0; i<lldata.size(); i++){
-            Node* first = new Node(lldata[i]);
-            
-            if(i == lldata.size()-1) Node* second = new Node(lldata[i]);
-            
-            Node* second = new Node(lldata[i+1],first);
-        }
-        
         this-> size = lldata.size();
+
+        Node* first = new Node(lldata[0], start);
+        Node* mover = first;
+        for(int i = 1; i<lldata.size(); i++){
+
+            Node* temp = new Node(lldata[i]);
+            mover->next = temp;
+            mover = temp;
+            }
+
     }
     //getter
     void getData(){
         Node* iterator = start;
 
         while(iterator!= end){
-            
+
+        }
+
+
+
         }
 
 
 
-        }
-    }
 
-
-    
 };
 
 class Orderbook{
     private:
-        
+
 };
 
 
 
 int main(){
-    
-    
-    Node * head = new Node(180.2);
-    head->getNext();
+
+    vector<int> a = {1,2,3,4,5};
+
+    List * list = new List(a);
+    cout << list->start;
     return 0;
 
 }
