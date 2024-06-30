@@ -8,7 +8,7 @@ class Node
 	//data
 	public:
 
-		float data;
+	float data;
 	Node * next;
 
 	//constructors
