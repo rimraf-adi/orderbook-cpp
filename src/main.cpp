@@ -3,85 +3,100 @@
 #include <vector>
 using namespace std;
 
-class Node{
-    //data
-    public:
+class Node
+{
+	//data
+	public:
 
-    float data;
-    Node*next;
+		float data;
+	Node * next;
 
-    //constructors
-    public:
+	//constructors
+	public: Node(float data)
+	{
+		this->data = data;
+		this->next = nullptr;
+	}
 
-    Node(float data, Node*next){
-        this -> data = data;
-        this -> next = next;}
-    Node(float data){
-        this -> data = data;
-        this -> next = nullptr;}
+	//getter
+	void getData()
+	{
+		cout << data << endl;
+	}
 
-    //getter
-    void getData(){
-        cout << data;}
-
-    void getNext(){
-        cout << next;}
-
-
-
+	void getNext()
+	{
+		cout << next;
+	}
 };
 
-class List{
-    public:
-        Node* start;
-        Node* end;
-        int size;
+class List
+{
+	Node * start;
+	public:
+		List(vector<float> a)
+		{
+			Node *first = new Node(a[0]);
+			Node *mover = first;
+			for (int i = 1; i < a.size(); i++)
+			{
+				Node *temp = new Node(a[i]);
+				mover->next = temp;
+				mover = temp;
+			}
 
-    public:
-    //constructor
-    List(vector<int> lldata ){
-        this-> size = lldata.size();
+			this->start = first;
+		}
 
-        Node* first = new Node(lldata[0], start);
-        Node* mover = first;
-        for(int i = 1; i<lldata.size(); i++){
+        List() = default;
 
-            Node* temp = new Node(lldata[i]);
-            mover->next = temp;
-            mover = temp;
-            }
+	void printList(Node *first, int size)
+	{
+		Node *mover = first;
 
+		for (int i = 0; i < size; i++)
+		{
+			mover->getData();
+			mover = mover->next;
+		}
+	}
+    Node*getStart(){
+        return start;
     }
-    //getter
-    void getData(){
-        Node* iterator = start;
-
-        while(iterator!= end){
-
-        }
-
-
-
-        }
-
-
 
 
 };
 
-class Orderbook{
-    private:
+class Orderbook
+{
 
+    List buy;
+    List sell;
+	float currentPrice;
+
+	public: 
+    
+    Orderbook(vector<float> buy, vector<float> sell) {
+        this->buy = List(buy);
+        this->sell = List(sell);
+        this-> currentPrice = -1;
+    }
+
+	void buyStocks(float price) {}
+
+	void sellStocks(float price) {}
+
+	void getDepth() {}
+
+	void quote(float price) {}
 };
 
+int main()
+{
+	vector<float> a = { 1.23,2.99,3.45,4.67,5.98};
 
-
-int main(){
-
-    vector<int> a = {1,2,3,4,5};
-
-    List * list = new List(a);
-    cout << list->start;
-    return 0;
+	List list = List(a);
+    list.printList(list.getStart(), a.size());
+	return 0;
 
 }
