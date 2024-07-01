@@ -1,1 +1,6 @@
 g++ -std=c++11 -arch arm64 src/main.cpp -o main && ./main
+
+
+git add src/main.cpp
+git commit -m "auto commit to save time"
+git push
