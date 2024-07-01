@@ -27,6 +27,7 @@ public:
 class List {
 	Node *start;
 	Node *end;
+	int size;
 
 public:
 	List(vector<float> a) {
@@ -38,13 +39,14 @@ public:
 			mover = temp;
 			end = mover;
 		}
+		this->size = a.size();
 		this->start = first;
 	}
 	List(){
 		start = nullptr;
 		end = nullptr;
 	}
-
+	
 	void printList(Node *first, int size) {
 		Node *mover = first;
 		for (int i = 0; i < size; i++) {
@@ -57,6 +59,11 @@ public:
 		Node* tempNode = new Node(data);
 		end->next = tempNode;
 		end = end->next;
+		size++;
+	}
+
+	int getSize(){
+		return size;
 	}
 	Node *getStart() {
 		return start;
@@ -91,8 +98,6 @@ int main() {
 	vector<float> a = {1.23, 2.99, 3.45, 4.67, 5.98};
 	List myList = List(a);
 	myList.appendData(55.444);
-	// myList.printList(myList.getStart(), a.size()+1);
-	Node* end = myList.getEnd();
-	end->getData();
+	cout << myList.getSize();
 	return 0;
 }
