@@ -60,7 +60,7 @@ public:
 				return temp;
 			}
 			iterator = iterator->next;}
-		return start;
+		return nullptr;
 
 	}
 	
@@ -112,7 +112,28 @@ public:
 	}
 	
 	void buyStocks(float price, float quantity) {
+		Node*iterator= sell.getEnd();
+		iterator->printData();
 
+			while(iterator!=nullptr){
+			if(price>=iterator->data.first){
+				
+				
+				if(quantity>iterator->data.second){
+					quantity = quantity-iterator->data.second;
+					//delete node;
+					iterator->data.first = 0;
+					iterator->data.second = 0;
+
+				}
+				else if (quantity<iterator->data.second){
+						iterator->data.second = iterator->data.second - quantity;
+						iterator = nullptr;
+				}
+			}
+			
+			}
+	
 	}
 
 	void sellStocks(float price, float quantity) {}
@@ -157,8 +178,8 @@ int main() {
 	List sellList = List(sampleSell);
 
 
-	// Orderbook sampleBook = Orderbook(sampleBuy, sampleSell);
-	// sampleBook.getDepth();
+	Orderbook sampleBook = Orderbook(sampleBuy, sampleSell);
+	sampleBook.buyStocks(123,123);
 
 	return 0;
 }
