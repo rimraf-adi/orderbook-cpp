@@ -1,0 +1,161 @@
+#include <iostream>
+#include <vector>
+#include <format>
+#include <utility>
+#include <list>
+#include <functional>
+#include <map>
+#include <unordered_map>
+
+
+enum class OrderType {
+	GoodTillCancel,
+	FillandKill
+};
+
+enum class Side {
+	Buy,
+	Sell
+};
+
+using Price = std::int32_t;
+using Quantity = std::uint32_t;
+using OrderId = std::uint64_t;
+
+struct LevelInfo {
+	Price price;
+	Quantity quantity;
+};
+
+using LevelInfos = std::vector<LevelInfo>;
+
+class OrderbookLevelInfos {
+
+	LevelInfos bids;
+	LevelInfos asks;
+	
+	public:
+	OrderbookLevelInfos(LevelInfos &bids, LevelInfos &asks){
+		this->bids = bids;
+		this->asks = asks;
+	}
+	LevelInfos getBids() {return bids;}
+	LevelInfos getAsks() {return asks;}
+	
+};
+
+class Order {
+
+	OrderType orderType;
+	OrderId orderid; 
+	Side side; 
+	Price price; 
+	Quantity initialQuantity;
+	Quantity remainingQuantity;
+
+	public:
+	Order(OrderType orderType, OrderId orderid, Side side, Price price, Quantity quantity){
+		this->orderType = orderType;
+		this->orderid = orderid;
+		this->side = side;
+		this->price = price;
+		this->initialQuantity = quantity;
+	}
+
+	OrderType getOrderType() { return orderType; }
+	OrderId getOrderId() { return orderid; }
+	Side getSide() { return side; }
+	Price getPrice() { return price; }
+	Quantity getInitialQuantity() { return initialQuantity; }
+	Quantity getRemainingQuantity() { return remainingQuantity; }
+	Quantity getFilledQuantity() { return getInitialQuantity() - getRemainingQuantity(); }
+
+	void fill(Quantity quantity){
+		if(quantity > getRemainingQuantity()) throw std::logic_error(std::format("Order{()} cannot be filled more than its remaining quantity", getOrderId()));
+		remainingQuantity = remainingQuantity - quantity;
+	}
+};
+
+using OrderPointer = std::shared_ptr<Order>;
+using OrderPointers = std::list<OrderPointer>;
+
+
+class ModifyOrder{
+
+	OrderId orderId;
+	Price price;
+	Side side;
+	Quantity quantity;
+
+	public:
+		ModifyOrder(OrderId orderId,Price price,Side side,Quantity quantity){
+			this->orderId = orderId;
+			this->price = price;
+			this->side = side;
+			this->quantity = quantity;
+
+		}
+
+
+	OrderId getOrderId() { return orderId; }
+	Side getSide() { return side; }
+	Price getPrice() { return price; }
+	Quantity getQuantity() { return quantity; }
+
+	OrderPointer ToOrderPointer (OrderType type){return std::make_shared<Order>(type,getOrderId(), getSide(), getPrice(), getQuantity() );}
+
+
+};
+
+struct TradeInfo{
+
+	OrderId orderId;
+	Price price;
+	Quantity quantity;
+
+};
+
+class Trade{
+	TradeInfo bidTrade;
+	TradeInfo askTrade;
+
+	public:
+	Trade(TradeInfo bidTrade, TradeInfo askTrade){
+		this->askTrade = askTrade;
+		this->bidTrade = bidTrade;
+	}
+
+	TradeInfo getBidTrade() { return bidTrade; }
+	TradeInfo getAskTrade() { return askTrade; }
+};
+
+using Trades = std::vector<Trade>;
+
+class Orderbook {
+
+	struct OrderEntry {
+		OrderPointer order {nullptr};
+		OrderPointers::iterator location;
+	};
+
+	std::map<Price, OrderPointers, std::greater<Price>> bids;
+	std::map<Price, OrderPointers, std::less<Price>> asks;
+	std::unordered_map<OrderId, OrderEntry> orders;
+
+	bool canMatch (Side side, Price price){
+		if (side == Side::Buy){
+
+		if (asks.empty()) return false;
+
+		const auto& [bestAsk,_] = *asks.begin();
+		return price>=bestAsk;
+
+
+		}
+	else{
+		if(bids.empty()) return false;
+		const auto& [bestBid,_] = *bids.begin();
+		return price<=bestBid;
+	}
+	}
+};
